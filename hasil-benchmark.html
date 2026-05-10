@@ -1,0 +1,61 @@
+
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Hasil Benchmark Otomatis</title>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <style>
+                body { font-family: sans-serif; text-align: center; background: #f8f9fa; padding: 20px; }
+                .container { display: flex; justify-content: center; gap: 30px; margin-top: 30px; flex-wrap: wrap; }
+                .chart-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 45%; min-width: 400px; }
+            </style>
+        </head>
+        <body>
+            <h1>🚀 Hasil Pengujian: Heavy Aggregation (OULAD)</h1>
+            <p>25 Koneksi Bersamaan | Durasi: 15 Detik per Arsitektur</p>
+            
+            <div class="container">
+                <div class="chart-box">
+                    <h3>Throughput (Req/Sec)</h3>
+                    <p style="color: gray; font-size: 14px;">Semakin tinggi semakin baik</p>
+                    <canvas id="throughputChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>Latency (ms)</h3>
+                    <p style="color: gray; font-size: 14px;">Semakin rendah semakin responsif</p>
+                    <canvas id="latencyChart"></canvas>
+                </div>
+            </div>
+
+            <script>
+                const labels = ['Skenario Analitik Berat (Massive Scan)'];
+                
+                // Chart Throughput
+                new Chart(document.getElementById('throughputChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'PostgreSQL', data: [4.54], backgroundColor: '#3498db' },
+                            { label: 'Polyglot', data: [1414.07], backgroundColor: '#2ecc71' }
+                        ]
+                    }
+                });
+
+                // Chart Latency
+                new Chart(document.getElementById('latencyChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'PostgreSQL', data: [4531], backgroundColor: '#e74c3c' },
+                            { label: 'Polyglot', data: [17.19], backgroundColor: '#f1c40f' }
+                        ]
+                    }
+                });
+            </script>
+        </body>
+        </html>
+        

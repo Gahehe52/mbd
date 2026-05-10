@@ -1,0 +1,96 @@
+
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Skalabilitas Polyglot vs Monolitik</title>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background: #fdfdfd; padding: 20px; }
+                .container { display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 20px; }
+                .chart-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 80%; max-width: 900px; }
+            </style>
+        </head>
+        <body>
+            <h1>📈 Tren Performa Berdasarkan Volume Data</h1>
+            <p>Bukti Crossover Point: Kapan Polyglot Mengalahkan Monolitik?</p>
+            
+            <div class="container">
+                <div class="chart-box">
+                    <h2>Kapasitas Throughput (Request / Detik)</h2>
+                    <p style="color: gray; font-size: 14px;">(Garis yang lebih <b>TINGGI</b> lebih baik)</p>
+                    <canvas id="throughputLineChart"></canvas>
+                </div>
+
+                <div class="chart-box">
+                    <h2>Waktu Respons Latency (Milidetik)</h2>
+                    <p style="color: gray; font-size: 14px;">(Garis yang lebih <b>RENDAH</b> lebih baik)</p>
+                    <canvas id="latencyLineChart"></canvas>
+                </div>
+            </div>
+
+            <script>
+                const dataLabels = ['Skala Kecil (1 Mahasiswa)', 'Skala Menengah (Modul AAA)', 'Skala Raksasa (Modul FFF)'];
+                
+                // --- SETUP CHART THROUGHPUT ---
+                new Chart(document.getElementById('throughputLineChart'), {
+                    type: 'line',
+                    data: {
+                        labels: dataLabels,
+                        datasets: [
+                            {
+                                label: 'Monolitik (PostgreSQL)',
+                                data: [1220.2, 4.7, 5.2],
+                                borderColor: '#e74c3c', // Merah
+                                backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                                borderWidth: 3,
+                                tension: 0.3,
+                                pointRadius: 6
+                            },
+                            {
+                                label: 'Polyglot (PG + MongoDB)',
+                                data: [1030.1, 1430.6, 1286.5],
+                                borderColor: '#2ecc71', // Hijau
+                                backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                                borderWidth: 3,
+                                tension: 0.3,
+                                pointRadius: 6
+                            }
+                        ]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+
+                // --- SETUP CHART LATENCY ---
+                new Chart(document.getElementById('latencyLineChart'), {
+                    type: 'line',
+                    data: {
+                        labels: dataLabels,
+                        datasets: [
+                            {
+                                label: 'Monolitik (PostgreSQL)',
+                                data: [20.01, 4204, 3941.47],
+                                borderColor: '#e74c3c',
+                                borderDash: [5, 5], // Garis putus-putus untuk Latency Mono
+                                borderWidth: 3,
+                                tension: 0.3,
+                                pointRadius: 6
+                            },
+                            {
+                                label: 'Polyglot (PG + MongoDB)',
+                                data: [23.77, 16.97, 18.95],
+                                borderColor: '#2ecc71',
+                                borderDash: [5, 5], // Garis putus-putus untuk Latency Poly
+                                borderWidth: 3,
+                                tension: 0.3,
+                                pointRadius: 6
+                            }
+                        ]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+            </script>
+        </body>
+        </html>
+        

@@ -1,0 +1,15 @@
+# Mengabaikan folder dependency Node.js
+node_modules/
+
+# MENGABAIKAN SEMUA DATASET RAKSASA (Sangat Penting!)
+*.csv
+
+# Mengabaikan file log dan cache Jupyter/Python
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.ipynb_checkpoints/
+__pycache__/
+
+# Mengabaikan environment variables (jika ada)
+.env

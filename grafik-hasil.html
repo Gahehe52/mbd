@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisasi Eksperimen Polyglot OULAD</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .chart-wrapper {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 45%;
+            min-width: 400px;
+        }
+        .conclusion {
+            margin-top: 30px;
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            text-align: left;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 Hasil Stress Test: Monolitik vs Polyglot</h1>
+    <p>Dataset: Open University Learning Analytics Dataset (OULAD) - 10,6 Juta Baris</p>
+
+    <div class="container">
+        <div class="chart-wrapper">
+            <h2>1. Throughput / Kapasitas Server</h2>
+            <p style="font-size: 14px; color: #666;">(Request Per Detik - <b>Semakin Tinggi Semakin Baik</b>)</p>
+            <canvas id="throughputChart"></canvas>
+        </div>
+
+        <div class="chart-wrapper">
+            <h2>2. Waktu Respons (Latency)</h2>
+            <p style="font-size: 14px; color: #666;">(Milidetik - <b>Semakin Rendah Semakin Baik</b>)</p>
+            <canvas id="latencyChart"></canvas>
+        </div>
+    </div>
+
+    <div class="conclusion">
+        <h3>💡 Kesimpulan Utama</h3>
+        <ul>
+            <li><b>Skenario 1 (Kueri Ringan 1 Mahasiswa):</b> PostgreSQL (Monolitik) menang tipis karena efisiensi <i>B-Tree Index</i> dan tidak adanya beban jaringan ganda (Polyglot tax).</li>
+            <li><b>Skenario 2 (Analitik Berat Jutaan Baris):</b> MongoDB (Polyglot) <b>menghancurkan</b> batasan relasional. Ia memproses ~29.000% lebih banyak request per detik dibandingkan PostgreSQL yang mengalami <i>choking</i> (macet) hingga nyaris 4,5 detik per request.</li>
+        </ul>
+    </div>
+
+    <script>
+        // Konfigurasi Data (Sesuai hasil terminal Anda)
+        const labels = ['Skenario 1: Kueri Ringan (Point Query)', 'Skenario 2: Analitik Berat (Massive Scan)'];
+        
+        // Data Throughput (Req/Sec)
+        const dataThroughputBaseline = [1127, 4.67]; // Monolitik
+        const dataThroughputPolyglot = [835, 1361];  // Polyglot
+
+        // Data Latency (ms)
+        const dataLatencyBaseline = [88, 4469];   // Monolitik
+        const dataLatencyPolyglot = [119, 17.85]; // Polyglot
+
+        // 1. Render Chart Throughput
+        const ctxThroughput = document.getElementById('throughputChart').getContext('2d');
+        new Chart(ctxThroughput, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Baseline (PostgreSQL)',
+                        data: dataThroughputBaseline,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Polyglot (PostgreSQL + MongoDB)',
+                        data: dataThroughputPolyglot,
+                        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        // 2. Render Chart Latency
+        const ctxLatency = document.getElementById('latencyChart').getContext('2d');
+        new Chart(ctxLatency, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Baseline (PostgreSQL)',
+                        data: dataLatencyBaseline,
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Polyglot (PostgreSQL + MongoDB)',
+                        data: dataLatencyPolyglot,
+                        backgroundColor: 'rgba(241, 196, 15, 0.7)',
+                        borderColor: 'rgba(241, 196, 15, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    </script>
+</body>
+</html>

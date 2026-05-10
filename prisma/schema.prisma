@@ -1,0 +1,108 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. courses.csv
+model courses {
+  code_module                String
+  code_presentation          String
+  module_presentation_length Int
+
+  // Relasi
+  assessments         assessments[]
+  studentInfo         studentInfo[]
+  studentRegistration studentRegistration[]
+  vle                 vle[]
+
+  @@id([code_module, code_presentation])
+}
+
+// 2. assessments.csv
+model assessments {
+  id_assessment     Int     @id
+  code_module       String
+  code_presentation String
+  assessment_type   String
+  date              Int?    // Bisa null (?)
+  weight            Float
+
+  course            courses @relation(fields: [code_module, code_presentation], references: [code_module, code_presentation])
+  studentAssessment studentAssessment[]
+}
+
+// 3. studentInfo.csv
+model studentInfo {
+  id_student           Int
+  code_module          String
+  code_presentation    String
+  gender               String
+  region               String
+  highest_education    String
+  imd_band             String? // Bisa null (?)
+  age_band             String
+  num_of_prev_attempts Int
+  studied_credits      Int
+  disability           String
+  final_result         String
+
+  course courses @relation(fields: [code_module, code_presentation], references: [code_module, code_presentation])
+  
+  @@id([id_student, code_module, code_presentation])
+}
+
+// 4. studentRegistration.csv
+model studentRegistration {
+  id_student          Int
+  code_module         String
+  code_presentation   String
+  date_registration   Int?   // Bisa null (?)
+  date_unregistration Int?   // Bisa null (?)
+
+  course courses @relation(fields: [code_module, code_presentation], references: [code_module, code_presentation])
+
+  @@id([id_student, code_module, code_presentation])
+}
+
+// 5. studentAssessment.csv
+model studentAssessment {
+  id_assessment  Int
+  id_student     Int
+  date_submitted Int
+  is_banked      Int
+  score          Int?   // Bisa null (?)
+
+  assessment assessments @relation(fields: [id_assessment], references: [id_assessment])
+
+  @@id([id_student, id_assessment])
+}
+
+// 6. vle.csv (Material Modul)
+model vle {
+  id_site           Int     @id
+  code_module       String
+  code_presentation String
+  activity_type     String
+  week_from         Int?    // Bisa null (?)
+  week_to           Int?    // Bisa null (?)
+
+  course courses @relation(fields: [code_module, code_presentation], references: [code_module, code_presentation])
+}
+
+// 7. studentVle.csv (Skenario Baseline Monolitik)
+model studentVle {
+  id                Int    @id @default(autoincrement())
+  code_module       String
+  code_presentation String
+  id_student        Int
+  id_site           Int
+  date              Int
+  sum_click         Int
+
+  // Indexing agar pencarian log cepat
+  @@index([id_student, code_module, code_presentation])
+}
