@@ -94,4 +94,39 @@ app.get('/api/polyglot-heavy/:module/:presentation', async (req, res) => {
     }
 });
 
+// =========================================================
+// 4. SKENARIO COMPLEX AGGREGATION (Real-world Dashboard)
+// Mensimulasikan Group By Multi-Kolom (id_site & date) dari Jutaan Baris
+// =========================================================
+
+// Baseline Complex (PostgreSQL dipaksa menyusun ulang data di Memori)
+app.get('/api/baseline-complex/:module/:presentation', async (req, res) => {
+    const { module, presentation } = req.params;
+    try {
+        const data = await prisma.studentVle.groupBy({
+            by: ['id_site', 'date'],
+            where: { code_module: module, code_presentation: presentation },
+            _sum: { sum_click: true }
+        });
+        // Kita hanya mengembalikan jumlah baris agar tidak membebani network (fokus siksa CPU)
+        res.json({ total_group_rows: data.length });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+// Polyglot Complex (MongoDB mengeksekusi Aggregation Pipeline)
+app.get('/api/polyglot-complex/:module/:presentation', async (req, res) => {
+    const { module, presentation } = req.params;
+    try {
+        const data = await VleMongo.aggregate([
+            { $match: { code_module: module, code_presentation: presentation } },
+            { $group: { _id: { id_site: "$id_site", date: "$date" }, total_clicks: { $sum: "$sum_click" } } }
+        ]);
+        res.json({ total_group_rows: data.length });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 app.listen(3000, () => console.log('Server API berjalan di port 3000...'));

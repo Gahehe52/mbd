@@ -13,6 +13,8 @@ const studentVleSchema = new mongoose.Schema({
 // Compound Index untuk skenario query analitik
 studentVleSchema.index({ id_student: 1, code_module: 1, code_presentation: 1 });
 
+studentVleSchema.index({ code_module: 1, code_presentation: 1 });
+
 const VleMongo = mongoose.model('StudentVle', studentVleSchema);
 
 module.exports = { VleMongo };
