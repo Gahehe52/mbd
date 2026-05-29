@@ -1,3 +1,15 @@
+## 👨🏿‍🎨 Anggota Kelompok
+| Name | NIM | Github |
+|----------|----------|----------|
+| Doni Agus Setiawan  | 123140009  | gusti06 |
+| Tengku Hafid Diraputra  | 123140043  | ThDptr |
+| Andini Rahma Kemala | 123140067  | 04-123140067-AndiniRahmaKemala |
+| Zahwa Natasya Hamzah | 123140069 | 15-069-ZahwaNatasyaHamzah |
+| Muhammad Ghama Al Fajri  | 123140182 | Gahehe52 |
+| Reyhan Oktavian Putra | 123140202  | Ondor-R |
+| Yuni Okta Safitri  | 123140213  | yunioktasafitri |
+| Albi R. Suseno  | 120140095  | 120140095-AlbiR |
+
 ## 🚀 Fitur Utama
 - **Dual-Database Integration**: Menggunakan PostgreSQL untuk data relasional dan MongoDB untuk data log aktivitas masif (10.6 Juta Baris).
 - **Automated Benchmarking**: Skrip otomatis menggunakan Autocannon untuk menguji *throughput* dan *latency*.
